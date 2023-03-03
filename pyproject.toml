@@ -1,13 +1,10 @@
-[build-system]
-requires = ["flit"]
-build-backend = "flit.buildapi"
-
 [project]
 name =  "py-project-toml"
 authors = [
-    {name = "Daniel Ciborowski", email = "dciborow@microsoft.com"},
+    {name = "Rafael Pierre", email = "rafael.pierre@databricks.com"},
+    {name = "Sepideh Ebrahimi", email = "sepideh.ebrahimi@databricks.com"},
 ]
-description = "Sample Python Project for creating a new Python Module"
+description = "Python library for interacting with Databricks Serverless Realtime Inference endpoints."
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -46,9 +43,9 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/microsoft/python-package-template/tree/main#readme"
-Source = "https://github.com/microsoft/python-package-template"
-Tracker = "https://github.com/microsoft/python-package-template/issues"
+Documentation = "https://github.com/sebrahimi1988/databricks-srti-demo/README.md"
+Source = "https://github.com/sebrahimi1988/databricks-srti-demo/"
+Tracker = "https://github.com/sebrahimi1988/databricks-srti-demo/issues"
 
 [tool.flit.module]
 name = "python_package"

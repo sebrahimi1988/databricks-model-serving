@@ -1,4 +1,3 @@
-
 import urllib
 import json
 import logging
@@ -7,38 +6,43 @@ from typing import List, Dict
 
 class EndpointApiClient:
     """
-        Wrapper class around Databricks Serverless Realtime 
-        Inference Endpoints.
+    Wrapper class around Databricks Serverless Realtime
+    Inference Endpoints.
     """
 
     def __init__(self, base_url: str, token: str):
         """
-            Instantiates an EndpointApiClient. Parameters:
-            base_url: A string pointing to your workspace URL.
-            token: Access Token for interacting with your Databricks Workspace.
+        Instantiates an EndpointApiClient. Parameters:
+        base_url: A string pointing to your workspace URL.
+        token: Access Token for interacting with your Databricks Workspace.
         """
         self.base_url = base_url
         self.token = token
 
     def create_inference_endpoint(
-            self,
-            endpoint_name: str,
-            served_models: List[str]
-        ):
+        self,
+        endpoint_name: str,
+        served_models: List[str]
+    ):
         """
-            Creates inference endpoints for models.
-            endpoint_name: Serving endpoint name.
-            served_models: List of model names that will be deployed.
+        Creates inference endpoints for models.
+        endpoint_name: Serving endpoint name.
+        served_models: List of model names that will be deployed.
         """
 
-        data = {"name": endpoint_name, "config": {"served_models": served_models}}
+        data = {
+            "name": endpoint_name,
+            "config": {
+                "served_models": served_models
+            }
+        }
         return self._post("api/2.0/serving-endpoints", data)
 
     def get_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
-            Gets info on the inference endpoint.
+        Gets info on the inference endpoint.
 
-            endpoint_name: Serving endpoint name.
+        endpoint_name: Serving endpoint name.
         """
 
         return self._get(f"api/2.0/serving-endpoints/{endpoint_name}")
@@ -55,37 +59,46 @@ class EndpointApiClient:
         traffic_config: Dict = None
     ):
         """
-            Updates served models with the specified traffic_config.
-            
-            endpoint_name: Serving endpoint name.
-            served_models: List of served models.
-            traffic_config: New traffic split configuration.
+        Updates served models with the specified traffic_config.
+
+        endpoint_name: Serving endpoint name.
+        served_models: List of served models.
+        traffic_config: New traffic split configuration.
         """
 
         if traffic_config is None:
             data = data = {"served_models": served_models}
         else:
-            data = {"served_models": served_models, "traffic_config": traffic_config}
-        return self._put(f"api/2.0/serving-endpoints/{endpoint_name}/config", data)
+            data = {
+                "served_models": served_models,
+                "traffic_config": traffic_config
+            }
+        return self._put(
+            f"api/2.0/serving-endpoints/{endpoint_name}/config",
+            data
+        )
 
     def delete_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
-            Deletes an inference endpoint.
-            
-            endpoint_name: Serving endpoint name.
+        Deletes an inference endpoint.
+
+        endpoint_name: Serving endpoint name.
         """
 
         return self._delete(f"api/2.0/serving-endpoints/{endpoint_name}")
 
     def query_inference_endpoint(self, endpoint_name: str, data: Dict) -> Dict:
         """
-            Makes HTTP requests to an inference endpoint.
-            
-            endpoint_name: Serving endpoint name.
-            data: Payload containing the data expected by the model.
+        Makes HTTP requests to an inference endpoint.
+
+        endpoint_name: Serving endpoint name.
+        data: Payload containing the data expected by the model.
         """
 
-        return self._post(f"realtime-inference/{endpoint_name}/invocations", data)
+        return self._post(
+            f"realtime-inference/{endpoint_name}/invocations",
+            data
+        )
 
     # Debugging
 
@@ -95,15 +108,16 @@ class EndpointApiClient:
         served_model_name: str
     ) -> Dict:
         """
-            Gets the build logs for the specified endpoint/model.
-            
-            endpoint_name: Serving endpoint name.
-            served_model_name: Served model name.
+        Gets the build logs for the specified endpoint/model.
+
+        endpoint_name: Serving endpoint name.
+        served_model_name: Served model name.
         """
 
-        return self._get(
-            f"api/2.0/serving-endpoints/{endpoint_name}/served-models/{served_model_name}/build-logs"
-        )
+        served_models_path = "api/2.0/serving-endpoints/{}/served-models" \
+            .format(endpoint_name)
+        build_logs_path = f"{served_model_name}/build-logs"
+        return self._get(f"{served_models_path}/{build_logs_path}")
 
     def get_served_model_server_logs(
         self,
@@ -111,21 +125,22 @@ class EndpointApiClient:
         served_model_name: str
     ) -> Dict:
         """
-            Gets the server logs for the specified endpoint/model.
-            
-            endpoint_name: Serving endpoint name.
-            served_model_name: Served model name.
+        Gets the server logs for the specified endpoint/model.
+
+        endpoint_name: Serving endpoint name.
+        served_model_name: Served model name.
         """
 
-        return self._get(
-            f"api/2.0/serving-endpoints/{endpoint_name}/served-models/{served_model_name}/logs"
-        )
+        served_models_path = "api/2.0/serving-endpoints/{}/served-models" \
+            .format(endpoint_name)
+        server_logs_path = f"{served_model_name}/build-logs"
+        return self._get(f"{served_models_path}/{server_logs_path}")
 
     def get_inference_endpoint_events(self, endpoint_name: str) -> Dict:
         """
-            Gets the build endpoint events for the specified endpoint.
-            
-            endpoint_name: Serving endpoint name.
+        Gets the build endpoint events for the specified endpoint.
+
+        endpoint_name: Serving endpoint name.
         """
 
         return self._get(f"api/2.0/serving-endpoints/{endpoint_name}/events")
@@ -156,7 +171,10 @@ class EndpointApiClient:
 
         url = f"{self.base_url}/{uri}"
         req = urllib.request.Request(
-            url, data=json_bytes, headers=headers, method="PUT"
+            url,
+            data=json_bytes,
+            headers=headers,
+            method="PUT"
         )
         return self._make_request(req)
 

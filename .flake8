@@ -2,7 +2,9 @@
 max-line-length = 120
 select = "F,E,W,B,B901,B902,B903"
 exclude = [
-    "notebooks/",
+    ".venv",
+    "tests",
+    "notebooks",
     ".eggs",
     ".git",
     ".tox",
