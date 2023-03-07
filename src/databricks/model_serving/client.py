@@ -3,6 +3,7 @@ import json
 import logging
 from typing import List, Dict
 import requests
+from databricks.model_serving.endpoint import Endpoint
 
 class EndpointClient:
     """
@@ -12,7 +13,7 @@ class EndpointClient:
 
     def __init__(self, base_url: str, token: str):
         """
-        Instantiates an EndpointApiClient. Parameters:
+        Instantiates an EndpointClient. Parameters:
         base_url: A string pointing to your workspace URL.
         token: Access Token for interacting with your Databricks Workspace.
         """
@@ -36,7 +37,10 @@ class EndpointClient:
                 "served_models": served_models
             }
         }
-        return self._post("api/2.0/serving-endpoints", data)
+        return self._post(
+            uri = Endpoint.SERVING.value,
+            body = data
+        )
 
     def get_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
@@ -45,12 +49,12 @@ class EndpointClient:
         endpoint_name: Serving endpoint name.
         """
 
-        return self._get(f"api/2.0/serving-endpoints/{endpoint_name}")
+        return self._get(f"{Endpoint.SERVING}/{endpoint_name}")
 
     def list_inference_endpoints(self) -> Dict:
         """Lists all running inference endpoints."""
 
-        return self._get("api/2.0/serving-endpoints")
+        return self._get(Endpoint.SERVING.value)
 
     def update_served_models(
         self,
@@ -74,7 +78,7 @@ class EndpointClient:
                 "traffic_config": traffic_config
             }
         return self._put(
-            f"api/2.0/serving-endpoints/{endpoint_name}/config",
+            Endpoint.CONFIG.format(endpoint_name),
             data
         )
 
@@ -85,7 +89,7 @@ class EndpointClient:
         endpoint_name: Serving endpoint name.
         """
 
-        return self._delete(f"api/2.0/serving-endpoints/{endpoint_name}")
+        return self._delete(f"{Endpoint.SERVING}/{endpoint_name}")
 
     def query_inference_endpoint(self, endpoint_name: str, data: Dict) -> Dict:
         """
@@ -96,7 +100,7 @@ class EndpointClient:
         """
 
         return self._post(
-            f"realtime-inference/{endpoint_name}/invocations",
+            Endpoint.INVOCATIONS.format(endpoint_name),
             data
         )
 
@@ -114,8 +118,7 @@ class EndpointClient:
         served_model_name: Served model name.
         """
 
-        served_models_path = "api/2.0/serving-endpoints/{}/served-models" \
-            .format(endpoint_name)
+        served_models_path = Endpoint.SERVED_MODELS.format(endpoint_name)
         build_logs_path = f"{served_model_name}/build-logs"
         return self._get(f"{served_models_path}/{build_logs_path}")
 
@@ -131,8 +134,7 @@ class EndpointClient:
         served_model_name: Served model name.
         """
 
-        served_models_path = "api/2.0/serving-endpoints/{}/served-models" \
-            .format(endpoint_name)
+        served_models_path = Endpoint.SERVED_MODELS.format(endpoint_name)
         server_logs_path = f"{served_model_name}/build-logs"
         return self._get(f"{served_models_path}/{server_logs_path}")
 
@@ -143,32 +145,36 @@ class EndpointClient:
         endpoint_name: Serving endpoint name.
         """
 
-        return self._get(f"api/2.0/serving-endpoints/{endpoint_name}/events")
+        return self._get(Endpoint.EVENTS.format(endpoint_name))
 
     def _get(self, uri) -> Dict:
         url = f"{self.base_url}/{uri}"
         headers = {"Authorization": f"Bearer {self.token}"}
 
-        req = urllib.request.Request(url, headers=headers)
-        return self._make_request(req)
+        #req = urllib.request.Request(url, headers=headers)
+        #return self._make_request(req)
+        req = requests.get(
+            url = url,
+            headers = headers
+        )
+
+        return req.json()
 
     def _post(self, uri, body) -> Dict:
         json_body = json.dumps(body)
-        json_bytes = json_body.encode("utf-8")
+        #json_bytes = json_body.encode("utf-8")
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
         }
 
         url = f"{self.base_url}/{uri}"
-        #req = urllib.request.Request(url, data=json_bytes, headers=headers)
-        #return self._make_request(req)
         req = requests.post(
             url = url,
             headers = headers,
             data = json_body
         )
-        return req
+        return req.json()
 
     def _put(self, uri, body) -> Dict:
         json_body = json.dumps(body)
@@ -176,19 +182,28 @@ class EndpointClient:
         headers = {"Authorization": f"Bearer {self.token}"}
 
         url = f"{self.base_url}/{uri}"
-        req = urllib.request.Request(
+        """req = urllib.request.Request(
             url,
             data=json_bytes,
             headers=headers,
             method="PUT"
+        )"""
+        req = requests.put(
+            url = url,
+            headers = headers,
+            json = json_body
         )
-        return self._make_request(req)
+        return req.json()
 
     def _delete(self, uri) -> Dict:
         headers = {"Authorization": f"Bearer {self.token}"}
         url = f"{self.base_url}/{uri}"
-        req = urllib.request.Request(url, headers=headers, method="DELETE")
-        return self._make_request(req)
+        #req = urllib.request.Request(url, headers=headers, method="DELETE")
+        #return self._make_request(req)
+        req = requests.delete(
+            url = url,
+            headers = headers
+        )
 
     def _make_request(self, req) -> Dict:
         try:
