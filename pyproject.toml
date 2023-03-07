@@ -1,5 +1,5 @@
 [project]
-name =  "databricks-srti"
+name =  "databricks-model-serving"
 authors = [
     {name = "Rafael Pierre", email = "rafael.pierre@databricks.com"},
     {name = "Sepideh Ebrahimi", email = "sepideh.ebrahimi@databricks.com"},

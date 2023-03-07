@@ -2,9 +2,9 @@ import urllib
 import json
 import logging
 from typing import List, Dict
+import requests
 
-
-class EndpointApiClient:
+class EndpointClient:
     """
     Wrapper class around Databricks Serverless Realtime
     Inference Endpoints.
@@ -161,8 +161,14 @@ class EndpointApiClient:
         }
 
         url = f"{self.base_url}/{uri}"
-        req = urllib.request.Request(url, data=json_bytes, headers=headers)
-        return self._make_request(req)
+        #req = urllib.request.Request(url, data=json_bytes, headers=headers)
+        #return self._make_request(req)
+        req = requests.post(
+            url = url,
+            headers = headers,
+            data = json_body
+        )
+        return req
 
     def _put(self, uri, body) -> Dict:
         json_body = json.dumps(body)
