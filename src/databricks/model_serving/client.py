@@ -151,8 +151,6 @@ class EndpointClient:
         url = f"{self.base_url}/{uri}"
         headers = {"Authorization": f"Bearer {self.token}"}
 
-        #req = urllib.request.Request(url, headers=headers)
-        #return self._make_request(req)
         req = requests.get(
             url = url,
             headers = headers
