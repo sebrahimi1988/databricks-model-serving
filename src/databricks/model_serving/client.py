@@ -78,7 +78,7 @@ class EndpointClient:
                 "traffic_config": traffic_config
             }
         return self._put(
-            Endpoint.CONFIG.format(endpoint_name),
+            Endpoint.CONFIG.value.format(endpoint_name),
             data
         )
 
