@@ -1,0 +1,32 @@
+Metadata-Version: 2.1
+Name: databricks-model-serving
+Version: 0.0.1
+Summary: Python library for interacting with Databricks Serverless Realtime Inference endpoints.
+Author-email: Rafael Pierre <rafael.pierre@databricks.com>, Sepideh Ebrahimi <sepideh.ebrahimi@databricks.com>
+Project-URL: Documentation, https://github.com/sebrahimi1988/databricks-srti-demo/README.md
+Project-URL: Source, https://github.com/sebrahimi1988/databricks-srti-demo/
+Project-URL: Tracker, https://github.com/sebrahimi1988/databricks-srti-demo/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Provides-Extra: spark
+Provides-Extra: test
+
+# databricks-srti-demo
+
+This repo demonstrates the capabilities of the Serverless Real Time Inference (SRTI) on Databricks. It consists of 4 notebooks:
+
+* [00_srti_client](./Notebooks/00_srti_client) is a generic client to interact with the SRTI REST API.
+
+* [01_train](./Notebooks/01_train) trains two models and registers them in model registry prior to serving.
+
+* [02_serve](./Notebooks/02_serve) demonstrates how to serve models using SRTI.
+
+* [03_debug](./Notebooks/03_debug) shows you how to investigate logs of the endpoint for debugging purposes.
