@@ -4,7 +4,7 @@ import pytest
 from _pytest.nodes import Item
 
 
-def pytest_collection_modifyitems(items: list[Item]):
+def pytest_collection_modifyitems(items: List[Item]):
     for item in items:
         if "spark" in item.nodeid:
             item.add_marker(pytest.mark.spark)
@@ -16,3 +16,4 @@ def pytest_collection_modifyitems(items: list[Item]):
 def unit_test_mocks(monkeypatch: None):
     """Include Mocks here to execute all commands offline and fast."""
     pass
+

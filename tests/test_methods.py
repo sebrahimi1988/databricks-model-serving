@@ -1,26 +1,30 @@
-from databricks_srti.endpoint import EndpointApiClient
+from databricks.model_serving.client import EndpointClient
 import pytest
-import requests
+import requests_mock
 
+@pytest.fixture
+def mock_requests():
+    adapter = requests_mock.Adapter()
+    adapter.register_uri(
+        requests_mock.ANY,
+        requests_mock.ANY,
+        text='response'
+    )
 
-def test_enabled(responses):
+def test_create_inference_endpoint():
     
-    url = "http://fake.url/api/2.0/serving-endpoints"
-    client = EndpointApiClient(
-        base_url = url,
-        token = "FAKETOKEN"
-    )
+    with requests_mock.Mocker() as m:
+        url = "http://fake.url/"
+        m.post(requests_mock.ANY, text = '{"key": "response"}')
+        client = EndpointClient(
+            base_url = url,
+            token = "FAKETOKEN"
+        )
 
-    responses.add(
-        responses.POST,
-        url = url,
-        json = 1
-    )
+        result = client.create_inference_endpoint(
+            endpoint_name = "endpoint",
+            served_models = ["mymodel"]
+        )
+    
 
-    result = client.create_inference_endpoint(
-        endpoint_name = "endpoint",
-        served_models = ["mymodel"]
-    )
-
-    #assert len(responses.calls) == 1
     assert result is not None
