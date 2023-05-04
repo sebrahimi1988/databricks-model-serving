@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md # Serve a Scikit learn model at a REST API endpoint 
-# MAGIC 
+# MAGIC
 # MAGIC This notebook demonstrates how to serve Scikit learn models at REST API endpoints with Serverless Real-Time Inference ([AWS](https://docs.databricks.com/applications/mlflow/serverless-real-time-inference.html)|[Azure](https://docs.microsoft.com/azure/databricks/applications/mlflow/serverless-real-time-inference)).
 
 # COMMAND ----------
@@ -10,44 +10,47 @@
 
 # COMMAND ----------
 
-# MAGIC %run ./00_srti_client 
+import mlflow
+from src.databricks.model_serving.client import EndpointClient
+
+# get API URL and token 
+databricks_url = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiUrl().getOrElse(None)
+databricks_token = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().getOrElse(None)
 
 # COMMAND ----------
-
-# Import mlflow
-import mlflow
 
 mlflow_client = mlflow.MlflowClient()
+client = EndpointClient(databricks_url, databricks_token)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Create an endpoint and serve the model 
+# MAGIC ## Create an endpoint with your model 
 
 # COMMAND ----------
 
-# WORKSPACE_URL = "https://<YOUR-WORKSPACE.databricks.com URL>"
-# # Secret to store the API token was created using the databricks CLI (https://docs.databricks.com/dev-tools/cli/index.html)
-# # Essentially:
-# #  $ pip install databricks-cli
-# #  $ databricks configure --token
-# #  $ databricks secrets create-scope --scope <scope>
-# #  $ databricks secrets put --scope <scope> --key <key>
-# TOKEN = dbutils.secrets.get('<SCOPE>', '<KEY>')
-# client = EndpointApiClient(WORKSPACE_URL, TOKEN)
+model_name = "Diabetes_srti_demo"
+endpoint_name = "Diabetes_ep_srti_demo"
 
-# COMMAND ----------
-
-token = "<YOUR-TOKEN>"
-workspace_url = "<YOUR-WORKSPACE-URL>"
-client = EndpointApiClient(workspace_url, token)
+model_version = mlflow_client.get_latest_versions(model_name, stages=["Production"])[
+    -1
+].version
+models = [
+    {
+        "model_name": model_name,
+        "model_version": model_version,
+        "workload_size": "Small",
+        "scale_to_zero_enabled": False,
+    }
+]
+client.create_inference_endpoint(endpoint_name, models)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Query the endpoint
-# MAGIC 
+# MAGIC
 # MAGIC Now that our endpoint is ready, we can query it
 
 # COMMAND ----------
