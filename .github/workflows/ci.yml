@@ -33,5 +33,5 @@ jobs:
         run: tox -e lint
       - name: Unit Testing
         id: tox
-        working-directory: husk
+        working-directory: src
         run: tox
