@@ -1,5 +1,7 @@
 urllib3
 pytest
+pytest-cov
+coverage[toml]
 flake8
 pylint
 black
