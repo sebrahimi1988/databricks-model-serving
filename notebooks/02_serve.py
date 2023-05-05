@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md # Serve a Scikit learn model at a REST API endpoint 
-# MAGIC 
+# MAGIC
 # MAGIC This notebook demonstrates how to serve Scikit learn models at REST API endpoints with Serverless Real-Time Inference ([AWS](https://docs.databricks.com/applications/mlflow/serverless-real-time-inference.html)|[Azure](https://docs.microsoft.com/azure/databricks/applications/mlflow/serverless-real-time-inference)).
 
 # COMMAND ----------
@@ -10,48 +10,34 @@
 
 # COMMAND ----------
 
-# MAGIC %run ./00_srti_client 
+import mlflow
+from src.databricks.model_serving.client import EndpointClient
+
+# get API URL and token 
+databricks_url = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiUrl().getOrElse(None)
+databricks_token = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().getOrElse(None)
 
 # COMMAND ----------
 
-# Import mlflow
-import mlflow
-
 mlflow_client = mlflow.MlflowClient()
+client = EndpointClient(databricks_url, databricks_token)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Create an endpoint and serve the model 
+# MAGIC ## List existing endpoints
 
 # COMMAND ----------
 
-# WORKSPACE_URL = "https://<YOUR-WORKSPACE.databricks.com URL>"
-# # Secret to store the API token was created using the databricks CLI (https://docs.databricks.com/dev-tools/cli/index.html)
-# # Essentially:
-# #  $ pip install databricks-cli
-# #  $ databricks configure --token
-# #  $ databricks secrets create-scope --scope <scope>
-# #  $ databricks secrets put --scope <scope> --key <key>
-# TOKEN = dbutils.secrets.get('<SCOPE>', '<KEY>')
-# client = EndpointApiClient(WORKSPACE_URL, TOKEN)
-
-# COMMAND ----------
-
-token = "<YOUR-TOKEN>"
-workspace_url = "<YOUR-WORKSPACE-URL>"
-client = EndpointApiClient(workspace_url, token)
-
-# COMMAND ----------
-
+client = EndpointClient(databricks_url, databricks_token)
 client.list_inference_endpoints()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Create an endpoint with your model
-# MAGIC 
+# MAGIC
 # MAGIC In the endpoint object returned by the create call, we can see that our endpoint’s update state is `IN_PROGRESS` and our served model is in a `CREATING` state. The `pending_config` field shows the details of the update in progress.
 
 # COMMAND ----------
@@ -79,9 +65,9 @@ client.list_inference_endpoints()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Check the state of your endpoint
-# MAGIC 
+# MAGIC
 # MAGIC We can check on the status of our endpoint to see if it is ready to receive traffic. Note that when the update is complete and the endpoint is ready to be queried, the `pending_config` is no longer populated.
 
 # COMMAND ----------
@@ -102,9 +88,9 @@ client.get_inference_endpoint(endpoint_name)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Query the endpoint
-# MAGIC 
+# MAGIC
 # MAGIC Now that our endpoint is ready, we can query it
 
 # COMMAND ----------
@@ -154,9 +140,9 @@ client.query_inference_endpoint(endpoint_name, input_data)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Update the compute config of the endpoint's served model
-# MAGIC 
+# MAGIC
 # MAGIC Say we want the endpoint to scale to zero to cut down the cost while the endpoint is not called overnight. To do this, we can perform an update on our endpoint. 
 
 # COMMAND ----------
@@ -183,11 +169,11 @@ while endpoint['state']['config_update'] == "IN_PROGRESS":
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Update the endpoint's served model
-# MAGIC 
+# MAGIC
 # MAGIC We can also use the update API to change the underlying model (e.g we trained a newer version of our model and would like the endpoint to serve the newer version of the model instead) and define how much of the traffic to be routed to that endpoint by setting the `traffic_percentage` variable. If only a single model is served at an endpoint the `traffic_percentage` is set to 100% by default.
-# MAGIC 
+# MAGIC
 # MAGIC In this example we are going to use the `Staging` version of our Diabetes model as a second model behind our endpoint and we will route 25% of the traffic to this new model.
 
 # COMMAND ----------
@@ -227,7 +213,7 @@ client.update_served_models(endpoint_name, models, traffic_config)
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC While the update is in progress, we can continue to query the endpoint (serving the original Production model). Once the update is complete, the endpoint will start to return responses from the Production model(75% of the traffic) as well as the Staging (25% of the traffic) one. 
+# MAGIC While the update is in progress, we can continue to query the endpoint (serving the original Production model). Once the update is complete, the endpoint will start to return responses from the Production model(50% of the traffic) as well as the Staging (50% of the traffic) one. 
 
 # COMMAND ----------
 
@@ -256,9 +242,9 @@ while endpoint['state']['config_update'] == "IN_PROGRESS":
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC ## Delete an endpoint
-# MAGIC 
+# MAGIC
 # MAGIC Lastly, if we no longer need an endpoint, we can delete it
 
 # COMMAND ----------
