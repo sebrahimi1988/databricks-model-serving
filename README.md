@@ -1,8 +1,15 @@
-# databricks-srti-demo
+# Databricks Model Serving Endpoints
+## Python Client
+
+<hr />
+![ci](https://github.com/sebrahimi1988/databricks-srti-demo/blob/main/.github/workflows/ci.yml/badge.svg?branch=main)
+
+<hr/>
+
 
 This repo demonstrates the capabilities of the Serverless Real Time Inference (SRTI) on Databricks. It consists of 4 notebooks:
 
-* [00_srti_client](./Notebooks/00_srti_client) is a generic client to interact with the SRTI REST API.
+## Examples
 
 * [01_train](./Notebooks/01_train) trains two models and registers them in model registry prior to serving.
 
