@@ -1,5 +1,4 @@
-# Databricks Model Serving Endpoints
-## Python Client
+# Databricks Model Serving Endpoints Python Client
 
 <hr />
 
