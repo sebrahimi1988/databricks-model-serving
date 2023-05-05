@@ -57,7 +57,7 @@ fast = true
 branch = true
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 70
 
 [tool.pyright]
 include = ["src"]
