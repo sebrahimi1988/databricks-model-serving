@@ -10,8 +10,16 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install ../ -q
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
 import mlflow
-from src.databricks.model_serving.client import EndpointClient
+from databricks.model_serving.client import EndpointClient
 
 # get API URL and token 
 databricks_url = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiUrl().getOrElse(None)
@@ -106,7 +114,9 @@ client.query_inference_endpoint(endpoint_name, input_data)
 
 # COMMAND ----------
 
-client.get_inference_endpoint_events(endpoint_name)
+events = client.get_inference_endpoint_events(endpoint_name)["events"]
+
+events
 
 # COMMAND ----------
 
@@ -114,15 +124,14 @@ client.get_inference_endpoint_events(endpoint_name)
 
 # COMMAND ----------
 
+latest_event = events[-1]
+latest_event
+
+# COMMAND ----------
+
 model_name = "Diabetes_srti_demo"
 
-
-model_version = mlflow_client.get_latest_versions(model_name, stages=["Production"])[
-    -1
-].version
-served_model_name = f"{model_name}-{model_version}"
-
-client.get_served_model_build_logs(endpoint_name, served_model_name)
+client.get_served_model_build_logs(latest_event["endpoint_name"], latest_event["served_model_name"])
 
 # COMMAND ----------
 
@@ -130,4 +139,4 @@ client.get_served_model_build_logs(endpoint_name, served_model_name)
 
 # COMMAND ----------
 
-client.get_served_model_server_logs(endpoint_name, served_model_name)
+client.get_served_model_server_logs(latest_event["endpoint_name"], latest_event["served_model_name"])

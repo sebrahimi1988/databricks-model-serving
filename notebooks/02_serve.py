@@ -10,8 +10,16 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install ../ -q
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
 import mlflow
-from src.databricks.model_serving.client import EndpointClient
+from databricks.model_serving.client import EndpointClient
 
 # get API URL and token 
 databricks_url = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiUrl().getOrElse(None)
@@ -75,11 +83,11 @@ client.list_inference_endpoints()
 import time
 
 endpoint = client.get_inference_endpoint(endpoint_name)
-print(endpoint)
+
 while endpoint['state']['config_update'] == "IN_PROGRESS":
   time.sleep(5)
   endpoint = client.get_inference_endpoint(endpoint_name)
-  print(endpoint)
+  print(endpoint["name"], endpoint["state"])
 
 # COMMAND ----------
 
@@ -160,11 +168,11 @@ client.update_served_models(endpoint_name, models)
 import time
 
 endpoint = client.get_inference_endpoint(endpoint_name)
-print(endpoint)
+
 while endpoint['state']['config_update'] == "IN_PROGRESS":
   time.sleep(5)
   endpoint = client.get_inference_endpoint(endpoint_name)
-  print(endpoint)
+  print(endpoint["name"], endpoint["state"])
 
 # COMMAND ----------
 
@@ -233,11 +241,11 @@ client.get_inference_endpoint(endpoint_name)
 import time
 
 endpoint = client.get_inference_endpoint(endpoint_name)
-print(endpoint)
+
 while endpoint['state']['config_update'] == "IN_PROGRESS":
   time.sleep(5)
   endpoint = client.get_inference_endpoint(endpoint_name)
-  print(endpoint)
+  print(endpoint["name"], endpoint["state"])
 
 # COMMAND ----------
 
