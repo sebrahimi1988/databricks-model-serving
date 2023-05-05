@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Endpoint(Enum):
     SERVING = "api/2.0/serving-endpoints"
     INVOCATIONS = "realtime-inference/{}/invocations"
