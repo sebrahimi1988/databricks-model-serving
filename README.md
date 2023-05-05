@@ -6,10 +6,34 @@
 
 <hr/>
 
+## Introduction
 
-This repo demonstrates the capabilities of the Serverless Real Time Inference (SRTI) on Databricks. It consists of 4 notebooks:
+* This is a Python framework which wraps [Databricks Model Serving Endpoints API](https://www.databricks.com/blog/2023/03/07/announcing-general-availability-databricks-model-serving.html#:~:text=Databricks%20Model%20Serving%20is%20the,reducing%20mistakes%20through%20integrated%20tools) functionality.
+* With a few lines of code, you can:
+  * Deploy realtime models
+  * Distribute traffic across two or more models running under the same endpoint (e.g. for A/B testing)
+  * Inspect model build and server logs
+  
+## Getting Started
+
+To get started, simply install the package from this repo:
+
+```bash
+pip install https://github.com/sebrahimi1988/databricks-srti-demo
+```
+
+Once the package is installed, you can leverage different functions in the `EndpointClient` class to `list`, `create` and `update` endpoints, amongst others. For instance, to list all model serving endpoints from a particular workspace:
+
+```python
+from databricks.model_serving.client import EndpointClient
+
+client = EndpointClient(databricks_url, databricks_token)
+client.list_inference_endpoints()
+```
 
 ## Examples
+
+In the `notebooks` folder you can find an example use case, where we train a model, register it in Model Registry and deploy it using the framework.
 
 * [01_train](./Notebooks/01_train) trains two models and registers them in model registry prior to serving.
 
