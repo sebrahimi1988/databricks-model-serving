@@ -2,7 +2,7 @@
 ## Python Client
 
 <hr />
-![ci](https://github.com/sebrahimi1988/databricks-srti-demo/blob/main/.github/workflows/ci.yml/badge.svg?branch=main)
+![ci](https://https://github.com/sebrahimi1988/databricks-srti-demo/actions/workflows/ci.yml/badge.svg)
 
 <hr/>
 
