@@ -35,7 +35,9 @@ class EndpointClient:
             data = {"name": endpoint_name, "config": {"served_models": served_models}}
             return self._post(uri=Endpoint.SERVING.value, body=data)
         except Exception as exception:
-            logging.error(f"Error while creating an inference endpoint: {str(exception)}")
+            logging.error(
+                f"Error while creating an inference endpoint: {str(exception)}"
+            )
             logging.error(f"Payload: {data}")
             logging.error(f"Headers: {self.headers}")
 
@@ -54,7 +56,9 @@ class EndpointClient:
 
         return self._get(Endpoint.SERVING.value)
 
-    def update_served_models(self, endpoint_name: str, served_models: List[str], traffic_config: Dict = None):
+    def update_served_models(
+        self, endpoint_name: str, served_models: List[str], traffic_config: Dict = None
+    ):
         """
         Updates served models with the specified traffic_config.
 
@@ -93,7 +97,9 @@ class EndpointClient:
 
     # Debugging
 
-    def get_served_model_build_logs(self, endpoint_name: str, served_model_name: str) -> Dict:
+    def get_served_model_build_logs(
+        self, endpoint_name: str, served_model_name: str
+    ) -> Dict:
         """
         Gets the build logs for the specified endpoint/model.
 
@@ -106,7 +112,9 @@ class EndpointClient:
         build_logs_path = f"{served_model_name}/build-logs"
         return self._get(f"{served_models_path}/{build_logs_path}")
 
-    def get_served_model_server_logs(self, endpoint_name: str, served_model_name: str) -> Dict:
+    def get_served_model_server_logs(
+        self, endpoint_name: str, served_model_name: str
+    ) -> Dict:
         """
         Gets the server logs for the specified endpoint/model.
 
@@ -136,13 +144,17 @@ class EndpointClient:
     def _post(self, uri, body) -> Dict:
         json_body = json.dumps(body)
         url = f"{self.base_url}/{uri}"
-        response = requests.request("POST", url=url, headers=self.headers, data=json_body)
+        response = requests.request(
+            "POST", url=url, headers=self.headers, data=json_body
+        )
         return self._handle_api_error(response)
 
     def _put(self, uri, body) -> Dict:
         json_body = json.dumps(body)
         url = f"{self.base_url}/{uri}"
-        response = requests.request("PUT", url=url, headers=self.headers, data=json_body)
+        response = requests.request(
+            "PUT", url=url, headers=self.headers, data=json_body
+        )
         return self._handle_api_error(response)
 
     def _delete(self, uri) -> Dict:
