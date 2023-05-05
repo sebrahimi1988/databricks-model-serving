@@ -24,7 +24,7 @@ class EndpointClient:
             "Content-Type": "application/json",
         }
 
-    def create_inference_endpoint(self, endpoint_name: str, served_models: List[str]):
+    def create_inference_endpoint(self, endpoint_name: str, served_models: List[str], traffic_config : Dict = None):
         """
         Creates inference endpoints for models.
         endpoint_name: Serving endpoint name.
@@ -32,7 +32,12 @@ class EndpointClient:
         """
 
         try:
-            data = {"name": endpoint_name, "config": {"served_models": served_models}}
+            config_dict = {
+                "served_models" : served_models
+            }
+            if (traffic_config is not None):
+                config_dict["traffic_config"] = traffic_config
+            data = {"name": endpoint_name, "config": config_dict}
             return self._post(uri=Endpoint.SERVING.value, body=data)
         except Exception as exception:
             logging.error(
