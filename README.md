@@ -2,6 +2,7 @@
 ## Python Client
 
 <hr />
+
 ![ci](https://https://github.com/sebrahimi1988/databricks-srti-demo/actions/workflows/ci.yml/badge.svg)
 
 <hr/>
