@@ -94,8 +94,7 @@ class EndpointClient:
         config_dict = {"served_models": served_models}
         if traffic_config is not None:
             config_dict["traffic_config"] = traffic_config
-        data = {"name": endpoint_name, "config": config_dict}
-        return self._put(Endpoint.CONFIG.value.format(endpoint_name), data)
+        return self._put(Endpoint.CONFIG.value.format(endpoint_name), config_dict)
 
     def delete_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
