@@ -19,7 +19,7 @@
 To get started, simply install the package from this repo:
 
 ```bash
-pip install https://github.com/sebrahimi1988/databricks-srti-demo
+pip install https://github.com/sebrahimi1988/databricks-model-serving
 ```
 
 Once the package is installed, you can leverage different functions in the `EndpointClient` class to `list`, `create` and `update` endpoints, amongst others. For instance, to list all model serving endpoints from a particular workspace:
@@ -35,8 +35,8 @@ client.list_inference_endpoints()
 
 In the `notebooks` folder you can find an example use case, where we train a model, register it in Model Registry and deploy it using the framework.
 
-* [01_train](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/01_train.py) trains two models and registers them in model registry prior to serving.
+* [01_train](https://github.com/sebrahimi1988/databricks-model-serving/tree/main/notebooks/01_train.py) trains two models and registers them in model registry prior to serving.
 
-* [02_serve](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/02_serve.py) demonstrates how to serve models using Model Serving.
+* [02_serve](https://github.com/sebrahimi1988/databricks-model-serving/tree/main/notebooks/02_serve.py) demonstrates how to serve models using Model Serving.
 
-* [03_debug](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/03_debug.py) shows you how to investigate logs of the endpoint for debugging purposes.
+* [03_debug](https://github.com/sebrahimi1988/databricks-model-serving/tree/main/notebooks/03_debug.py) shows you how to investigate logs of the endpoint for debugging purposes.

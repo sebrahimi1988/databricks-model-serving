@@ -262,3 +262,7 @@ client.delete_inference_endpoint(endpoint_name)
 # COMMAND ----------
 
 client.list_inference_endpoints()
+
+# COMMAND ----------
+
+
