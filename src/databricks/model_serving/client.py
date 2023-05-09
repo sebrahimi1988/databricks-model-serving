@@ -29,23 +29,23 @@ class EndpointClient:
         self, endpoint_name: str, served_models: List[str], traffic_config: Dict = None
     ):
         """
-        Creates inference endpoints for models.
+                Creates inference endpoints for models.
 
-        endpoint_name: Serving endpoint name.
-        served_models: List of model names that will be deployed.
-        traffic_config: Traffic percentage split between served models. Example:
-        traffic_config = {
-        "routes": [
-            {
-                "served_model_name": "model1",
-                "traffic_percentage": "25",
-            },
-            {
-                "served_model_name": "model2",
-                "traffic_percentage": "75",
-            },
-        ]
-}
+                endpoint_name: Serving endpoint name.
+                served_models: List of model names that will be deployed.
+                traffic_config: Traffic percentage split between served models. Example:
+                traffic_config = {
+                "routes": [
+                    {
+                        "served_model_name": "model1",
+                        "traffic_percentage": "25",
+                    },
+                    {
+                        "served_model_name": "model2",
+                        "traffic_percentage": "75",
+                    },
+                ]
+        }
         """
 
         config_dict = {"served_models": served_models}
