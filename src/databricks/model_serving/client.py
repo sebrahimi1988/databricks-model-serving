@@ -1,5 +1,4 @@
 import json
-import logging
 from typing import List, Dict
 import requests
 from databricks.model_serving.endpoint import Endpoint
@@ -13,7 +12,8 @@ class EndpointClient:
 
     def __init__(self, base_url: str, token: str):
         """
-        Instantiates an EndpointClient. Parameters:
+        Instantiates an EndpointClient. Parameters.
+
         base_url: A string pointing to your workspace URL.
         token: Access Token for interacting with your Databricks Workspace.
         """
@@ -24,32 +24,38 @@ class EndpointClient:
             "Content-Type": "application/json",
         }
 
-    def create_inference_endpoint(self, endpoint_name: str, served_models: List[str], traffic_config : Dict = None):
+    def create_inference_endpoint(
+        self, endpoint_name: str, served_models: List[str], traffic_config: Dict = None
+    ):
         """
-        Creates inference endpoints for models.
-        endpoint_name: Serving endpoint name.
-        served_models: List of model names that will be deployed.
+                Creates inference endpoints for models.
+
+                endpoint_name: Serving endpoint name.
+                served_models: List of model names that will be deployed.
+                traffic_config: Traffic percentage split between served models. Example:
+                traffic_config = {
+                "routes": [
+                    {
+                        "served_model_name": "model1",
+                        "traffic_percentage": "25",
+                    },
+                    {
+                        "served_model_name": "model2",
+                        "traffic_percentage": "75",
+                    },
+                ]
+        }
         """
 
-        try:
-            config_dict = {
-                "served_models" : served_models
-            }
-            if (traffic_config is not None):
-                config_dict["traffic_config"] = traffic_config
-            data = {"name": endpoint_name, "config": config_dict}
-            return self._post(uri=Endpoint.SERVING.value, body=data)
-        except Exception as exception:
-            logging.error(
-                f"Error while creating an inference endpoint: {str(exception)}"
-            )
-            logging.error(f"Payload: {data}")
-            logging.error(f"Headers: {self.headers}")
+        config_dict = {"served_models": served_models}
+        if traffic_config is not None:
+            config_dict["traffic_config"] = traffic_config
+        data = {"name": endpoint_name, "config": config_dict}
+        return self._post(uri=Endpoint.SERVING.value, body=data)
 
     def get_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
         Gets info on the inference endpoint.
-
 
         endpoint_name: Serving endpoint name.
         """
@@ -57,7 +63,9 @@ class EndpointClient:
         return self._get(f"{Endpoint.SERVING.value}/{endpoint_name}")
 
     def list_inference_endpoints(self) -> Dict:
-        """Lists all running inference endpoints."""
+        """
+        Lists all running inference endpoints.
+        """
 
         return self._get(Endpoint.SERVING.value)
 
@@ -67,22 +75,31 @@ class EndpointClient:
         """
         Updates served models with the specified traffic_config.
 
-
         endpoint_name: Serving endpoint name.
         served_models: List of served models.
-        traffic_config: New traffic split configuration.
+        traffic_config: New traffic split configuration. Example:
+        traffic_config = {
+        "routes": [
+            {
+                "served_model_name": "model1",
+                "traffic_percentage": "25",
+            },
+            {
+                "served_model_name": "model2",
+                "traffic_percentage": "75",
+            },
+        ]
         """
 
-        if traffic_config is None:
-            data = data = {"served_models": served_models}
-        else:
-            data = {"served_models": served_models, "traffic_config": traffic_config}
+        config_dict = {"served_models": served_models}
+        if traffic_config is not None:
+            config_dict["traffic_config"] = traffic_config
+        data = {"name": endpoint_name, "config": config_dict}
         return self._put(Endpoint.CONFIG.value.format(endpoint_name), data)
 
     def delete_inference_endpoint(self, endpoint_name: str) -> Dict:
         """
         Deletes an inference endpoint.
-
 
         endpoint_name: Serving endpoint name.
         """
@@ -92,7 +109,6 @@ class EndpointClient:
     def query_inference_endpoint(self, endpoint_name: str, data: Dict) -> Dict:
         """
         Makes HTTP requests to an inference endpoint.
-
 
         endpoint_name: Serving endpoint name.
         data: Payload containing the data expected by the model.
@@ -108,7 +124,6 @@ class EndpointClient:
         """
         Gets the build logs for the specified endpoint/model.
 
-
         endpoint_name: Serving endpoint name.
         served_model_name: Served model name.
         """
@@ -123,7 +138,6 @@ class EndpointClient:
         """
         Gets the server logs for the specified endpoint/model.
 
-
         endpoint_name: Serving endpoint name.
         served_model_name: Served model name.
         """
@@ -136,11 +150,11 @@ class EndpointClient:
         """
         Gets the build endpoint events for the specified endpoint.
 
-
         endpoint_name: Serving endpoint name.
         """
         return self._get(Endpoint.EVENTS.value.format(endpoint_name))
 
+    # REST API methods
     def _get(self, uri) -> Dict:
         url = f"{self.base_url}/{uri}"
         response = requests.request("GET", url=url, headers=self.headers)
