@@ -37,6 +37,6 @@ In the `notebooks` folder you can find an example use case, where we train a mod
 
 * [01_train](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/01_train.py) trains two models and registers them in model registry prior to serving.
 
-* [02_serve](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/02_serve) demonstrates how to serve models using Model Serving.
+* [02_serve](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/02_serve.py) demonstrates how to serve models using Model Serving.
 
-* [03_debug](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/03_debug) shows you how to investigate logs of the endpoint for debugging purposes.
+* [03_debug](https://github.com/sebrahimi1988/databricks-srti-demo/tree/main/notebooks/03_debug.py) shows you how to investigate logs of the endpoint for debugging purposes.
