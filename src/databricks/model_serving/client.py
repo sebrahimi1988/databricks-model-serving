@@ -1,5 +1,4 @@
 import json
-import logging
 from typing import List, Dict
 import requests
 from databricks.model_serving.endpoint import Endpoint
