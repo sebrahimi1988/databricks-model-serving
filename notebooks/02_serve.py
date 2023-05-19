@@ -10,7 +10,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install ../ -q
+# MAGIC %pip install git+https://github.com/sebrahimi1988/databricks-model-serving
 
 # COMMAND ----------
 
