@@ -19,7 +19,7 @@
 To get started, simply install the package from this repo:
 
 ```bash
-pip install https://github.com/sebrahimi1988/databricks-model-serving
+pip install git+https://github.com/sebrahimi1988/databricks-model-serving
 ```
 
 Once the package is installed, you can leverage different functions in the `EndpointClient` class to `list`, `create` and `update` endpoints, amongst others. For instance, to list all model serving endpoints from a particular workspace:
