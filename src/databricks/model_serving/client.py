@@ -49,6 +49,10 @@ class EndpointClient:
 
         config_dict = {"served_models": served_models}
         if traffic_config is not None:
+            # Sanity-Check/Workaround for UC model names (expected namespace catalog.schema.model_name)
+            for i in range(len(traffic_config["routes"])):
+                traffic_config["routes"][i]["served_model_name"] = traffic_config["routes"][i]["served_model_name"].split(".")[-1]
+            
             config_dict["traffic_config"] = traffic_config
         data = {"name": endpoint_name, "config": config_dict}
         return self._post(uri=Endpoint.SERVING.value, body=data)
